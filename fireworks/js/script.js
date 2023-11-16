@@ -2,6 +2,8 @@
 'use strict';
 console.clear();
 
+var audio = new Audio('/audios/jingle-bell.mp3');
+audio.volume = 0.3;
 // This is a prime example of what starts out as a simple project
 // and snowballs way beyond its intended size. It's a little clunky
 // reading/working on this single file, but here it is anyways :)
@@ -118,7 +120,7 @@ const store = {
 	state: {
 		// will be unpaused in init()
 		paused: true,
-		soundEnabled: true,
+		soundEnabled: false,
 		menuOpen: false,
 		openHelpTopic: null,
 		fullscreen: isFullscreen(),
@@ -2202,10 +2204,12 @@ const soundManager = {
 	},
 	
 	pauseAll() {
+		audio.pause();
 		this.ctx.suspend();
 	},
 
 	resumeAll() {
+		audio.play();
 		// Play a sound with no volume for iOS. This 'unlocks' the audio context when the user first enables sound.
 		this.playSound('lift', 0);
 		// Chrome mobile requires interaction before starting audio context.
