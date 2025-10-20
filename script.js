@@ -7,9 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const wishText = document.getElementById('wish-text');
 
   // (Toàn bộ phần code còn lại giữ nguyên ở đây)
-});
-
-  // Utility: random int/float
+ // Utility: random int/float
   const rand = (min, max) => Math.random() * (max - min) + min;
   const randInt = (a, b) => Math.floor(rand(a, b + 1));
 
@@ -184,5 +182,4 @@ document.addEventListener("DOMContentLoaded", function () {
   window.addEventListener('beforeunload', () => {
     clearInterval(ambientInterval);
   });
-
-})();
+});
