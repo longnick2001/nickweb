@@ -13,8 +13,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Đóng popup
   closeWish.addEventListener("click", () => {
-    wishPopup.classList.remove("show");
     animateWishText();
+    wishPopup.classList.remove("show");
+    
   });
 
   function animateWishText() {
