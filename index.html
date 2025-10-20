@@ -1,19 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-
+<!doctype html>
+<html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Long's web</title>
-    <link rel="icon" href="./images/favicon.png" type="image/x-icon">
-    <link rel="shortcut icon" href="./images/favicon.png" type="image/x-icon">
-    <link rel="stylesheet" href="app.css" />
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Chúc mừng Ngày Phụ Nữ Việt Nam 20/10</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
-
 <body>
+  <div class="stage">
+    <header class="card">
+      <h1 class="title">Chúc mừng<br>Ngày Phụ Nữ Việt Nam 20/10</h1>
+      <p class="subtitle">Chúc bạn luôn xinh đẹp, mạnh mẽ và tràn đầy yêu thương ❤️</p>
+      <button id="sendWish" class="btn">Gửi lời chúc</button>
+    </header>
 
-    <h1>Chúc mùng 20/10 chị em phụ nữ!</h1>
+    <!-- nơi chứa các trái tim và hoa động -->
+    <div id="float-layer" aria-hidden="true"></div>
+
+    <!-- Lời chúc hiện thị khi bấm -->
+    <div id="wish-popup" class="wish-popup" hidden>
+      <div class="wish-content">
+        <h2>Gửi tới người phụ nữ tuyệt vời ❤️</h2>
+        <p id="wish-text">Cảm ơn vì mọi yêu thương và sự hy sinh — chúc bạn luôn rạng rỡ!</p>
+        <button id="closeWish" class="btn small">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
-
 </html>
