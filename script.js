@@ -8,12 +8,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // Mở popup
   sendBtn.addEventListener("click", () => {
     wishPopup.classList.add("show");
+    animateWishText();
     spawnBurst();
   });
 
   // Đóng popup
   closeWish.addEventListener("click", () => {
-    animateWishText();
+    
     wishPopup.classList.remove("show");
     
   });
