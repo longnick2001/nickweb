@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // handle button events
   sendBtn.addEventListener('click', () => {
     // show popup
-    wishPopup.hidden = false;
+    //wishPopup.hidden = false;
     // burst visuals
     burstCelebrate();
     // small text animation
