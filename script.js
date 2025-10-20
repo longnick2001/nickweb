@@ -1,10 +1,13 @@
 // script.js - tạo hoa & trái tim động, handle nút bấm
-(function () {
+document.addEventListener("DOMContentLoaded", function () {
   const layer = document.getElementById('float-layer');
   const sendBtn = document.getElementById('sendWish');
   const wishPopup = document.getElementById('wish-popup');
   const closeWish = document.getElementById('closeWish');
   const wishText = document.getElementById('wish-text');
+
+  // (Toàn bộ phần code còn lại giữ nguyên ở đây)
+});
 
   // Utility: random int/float
   const rand = (min, max) => Math.random() * (max - min) + min;
