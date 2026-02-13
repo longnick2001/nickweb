@@ -541,7 +541,11 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      overflow: hidden;
+
+      overflow-x: hidden;   /* chỉ chặn ngang */
+      overflow-y: auto;     /* cho phép cuộn dọc */
+
+      padding: 40px 15px;   /* thêm khoảng cách mobile */
       position: relative;
     }
 
@@ -550,7 +554,7 @@
       padding: 45px 35px;
       border-radius: 25px;
       max-width: 550px;
-      width: 90%;
+      width: 100%;
       text-align: center;
       box-shadow: 0 25px 60px rgba(0,0,0,0.3);
       animation: fadeIn 1.5s ease;
@@ -559,7 +563,7 @@
     }
 
     h1 {
-      font-size: 2.4rem;
+      font-size: 2.2rem;
       color: #ff2e63;
       margin-bottom: 15px;
     }
@@ -570,14 +574,14 @@
     }
 
     p {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       line-height: 1.7;
       color: #333;
       margin: 12px 0;
     }
 
     .big-heart {
-      font-size: 4rem;
+      font-size: 3.5rem;
       animation: beat 1s infinite;
       margin: 20px 0;
     }
@@ -602,11 +606,14 @@
 
     /* Floating hearts */
     .floating-heart {
-      position: absolute;
+      position: fixed;        /* đổi absolute -> fixed */
+      bottom: -20px;
       color: #fff;
       font-size: 20px;
       animation: floatUp linear infinite;
       opacity: 0.8;
+      pointer-events: none;   /* không chặn thao tác vuốt */
+      z-index: 1;
     }
 
     @keyframes beat {
@@ -620,8 +627,8 @@
     }
 
     @keyframes floatUp {
-      from { transform: translateY(100vh); opacity: 1; }
-      to { transform: translateY(-10vh); opacity: 0; }
+      from { transform: translateY(0); opacity: 1; }
+      to { transform: translateY(-110vh); opacity: 0; }
     }
 
     .glow {
@@ -666,7 +673,7 @@
   <script>
     function showLove() {
       document.querySelector('.card').innerHTML = `
-        <h1>Love you💞</h1>
+        <h1>Love you 💞</h1>
         <div class="big-heart">💖</div>
         <p>
           Quách Gia Huệ à, cảm ơn em vì đã cho anh cơ hội được tìm hiểu và được quan tâm em.
@@ -691,7 +698,7 @@
       }, 7000);
     }
 
-    setInterval(createFloatingHeart, 400);
+    setInterval(createFloatingHeart, 500);
   </script>
 
 </body>
