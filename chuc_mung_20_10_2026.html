@@ -458,10 +458,144 @@
         transition-duration: .01ms !important;
       }
     }
+
+
+    /* Popup video chúc mừng */
+    .video-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(35, 10, 35, .82);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity .35s ease, visibility .35s ease;
+    }
+
+    .video-modal.show {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .video-box {
+      position: relative;
+      width: min(100%, 850px);
+      max-height: 92vh;
+      padding: 15px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(255, 126, 179, .97), rgba(161, 140, 209, .97));
+      box-shadow: 0 20px 80px rgba(255, 80, 160, .35);
+      transform: scale(.85) translateY(25px);
+      transition: transform .4s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .video-modal.show .video-box {
+      transform: scale(1) translateY(0);
+    }
+
+    .video-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      color: white;
+    }
+
+    .video-header h2 {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(22px, 4vw, 32px);
+    }
+
+    .video-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .video-control {
+      border: 1px solid rgba(255, 255, 255, .65);
+      border-radius: 50px;
+      padding: 9px 13px;
+      color: white;
+      background: rgba(255, 255, 255, .2);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .25s;
+    }
+
+    .video-control:hover {
+      background: rgba(255, 255, 255, .4);
+      transform: translateY(-2px);
+    }
+
+    .video-player {
+      display: block;
+      width: 100%;
+      max-height: calc(92vh - 100px);
+      aspect-ratio: 16 / 9;
+      object-fit: contain;
+      background: #160c18;
+      border-radius: 15px;
+    }
+
+    .video-caption {
+      margin-top: 12px;
+      text-align: center;
+      color: white;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 600px) {
+      .video-modal {
+        padding: 10px;
+      }
+
+      .video-box {
+        padding: 10px;
+        border-radius: 18px;
+      }
+
+      .video-header {
+        align-items: flex-start;
+      }
+
+      .video-header h2 {
+        font-size: 23px;
+      }
+
+      .video-actions {
+        gap: 5px;
+      }
+
+      .video-control {
+        padding: 8px 10px;
+        font-size: 12px;
+      }
+
+      .video-player {
+        max-height: 75vh;
+        aspect-ratio: auto;
+      }
+    }
+
   </style>
 </head>
 
 <body>
+
+  <!-- Nhạc nền 20/10 -->
+  <audio id="backgroundMusic" src="./musics/nhac_chucmung.mp3" loop preload="auto"></audio>
 
   <div id="stars"></div>
 
@@ -506,6 +640,10 @@
 
         <button class="btn" id="musicBtn">
           🎵 Bật nhạc nền
+        </button>
+
+        <button class="btn" id="videoBtn">
+          🎬 Xem video chúc mừng
         </button>
       </div>
 
@@ -554,6 +692,37 @@
     </div>
   </div>
 
+
+  <!-- Popup video chúc mừng 20/10 -->
+  <div class="video-modal" id="videoModal"
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="videoTitle">
+    <div class="video-box">
+      <div class="video-header">
+        <h2 id="videoTitle">💖 Video chúc mừng 20/10</h2>
+        <div class="video-actions">
+          <button class="video-control" id="muteVideoBtn" type="button">
+            🔊 Tắt tiếng
+          </button>
+          <button class="video-control" id="closeVideoBtn" type="button" aria-label="Đóng video">
+            ✕ Đóng
+          </button>
+        </div>
+      </div>
+
+      <video id="greetingVideo" class="video-player"
+             controls playsinline preload="metadata">
+        <source src="./videos/video_chucmung.mp4" type="video/mp4">
+        Trình duyệt của bạn không hỗ trợ phát video.
+      </video>
+
+      <p class="video-caption">
+        🌹 Chúc bạn luôn xinh đẹp, hạnh phúc và ngập tràn yêu thương! 🌹
+      </p>
+    </div>
+  </div>
+
   <script>
     const stars = document.getElementById('stars');
     const modal = document.getElementById('wishModal');
@@ -562,10 +731,8 @@
     const heartBtn = document.getElementById('heartBtn');
     const musicBtn = document.getElementById('musicBtn');
 
-    let audioContext;
-    let musicTimer;
+    const backgroundMusic = document.getElementById('backgroundMusic');
     let musicPlaying = false;
-    let noteIndex = 0;
 
     // Tạo bầu trời lấp lánh
     for (let i = 0; i < 55; i++) {
@@ -662,71 +829,99 @@
       }, 2200);
     });
 
-    // Nhạc nền tạo bằng Web Audio API, không cần tải file nhạc
-    function playNote(frequency, duration = 0.8) {
-      if (!audioContext) return;
-
-      const oscillator = audioContext.createOscillator();
-      const gain = audioContext.createGain();
-
-      oscillator.type = 'sine';
-      oscillator.frequency.value = frequency;
-
-      gain.gain.setValueAtTime(0.0001, audioContext.currentTime);
-      gain.gain.exponentialRampToValueAtTime(
-        0.045, audioContext.currentTime + 0.08
-      );
-      gain.gain.exponentialRampToValueAtTime(
-        0.0001, audioContext.currentTime + duration
-      );
-
-      oscillator.connect(gain);
-      gain.connect(audioContext.destination);
-
-      oscillator.start();
-      oscillator.stop(audioContext.currentTime + duration);
-    }
-
-    const melody = [
-      523.25, 659.25, 783.99, 659.25,
-      587.33, 698.46, 880.00, 698.46,
-      523.25, 659.25, 783.99, 1046.50,
-      880.00, 783.99, 659.25, 587.33
-    ];
-
+    // Phát nhạc nền từ file ./musics/nhac_chucmung.mp3
     musicBtn.addEventListener('click', async () => {
       if (!musicPlaying) {
         try {
-          audioContext = audioContext || new (
-            window.AudioContext || window.webkitAudioContext
-          )();
-
-          await audioContext.resume();
-
+          await backgroundMusic.play();
           musicPlaying = true;
           musicBtn.textContent = '🔇 Tắt nhạc nền';
-
-          musicTimer = setInterval(() => {
-            if (!musicPlaying) return;
-
-            playNote(melody[noteIndex], 0.7);
-            noteIndex = (noteIndex + 1) % melody.length;
-          }, 430);
-
-          playNote(melody[noteIndex], 0.7);
-          noteIndex = (noteIndex + 1) % melody.length;
-
         } catch (error) {
           musicPlaying = false;
           musicBtn.textContent = '🎵 Không thể phát nhạc';
+          console.error('Không thể phát nhạc nền:', error);
         }
-
       } else {
+        backgroundMusic.pause();
         musicPlaying = false;
-        clearInterval(musicTimer);
         musicBtn.textContent = '🎵 Bật nhạc nền';
       }
     });
+
+    // Popup video chúc mừng 20/10
+    const videoBtn = document.getElementById('videoBtn');
+    const videoModal = document.getElementById('videoModal');
+    const greetingVideo = document.getElementById('greetingVideo');
+    const closeVideoBtn = document.getElementById('closeVideoBtn');
+    const muteVideoBtn = document.getElementById('muteVideoBtn');
+
+    let previousBodyOverflow = '';
+
+    async function openVideoPopup() {
+      previousBodyOverflow = document.body.style.overflow;
+      videoModal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+
+      // Thử phát video có tiếng trước.
+      greetingVideo.muted = false;
+      muteVideoBtn.textContent = '🔊 Tắt tiếng';
+
+      try {
+        greetingVideo.currentTime = 0;
+      } catch (error) {
+        // Bỏ qua nếu metadata chưa tải xong.
+      }
+
+      try {
+        await greetingVideo.play();
+      } catch (error) {
+        // Nếu trình duyệt chặn tự phát có tiếng, thử phát tắt tiếng.
+        greetingVideo.muted = true;
+        muteVideoBtn.textContent = '🔇 Bật tiếng';
+
+        try {
+          await greetingVideo.play();
+        } catch (playError) {
+          // Người dùng có thể nhấn nút Play trên trình phát.
+        }
+      }
+    }
+
+    function closeVideoPopup() {
+      videoModal.classList.remove('show');
+      greetingVideo.pause();
+
+      try {
+        greetingVideo.currentTime = 0;
+      } catch (error) {
+        // Metadata có thể chưa tải xong.
+      }
+
+      document.body.style.overflow = previousBodyOverflow;
+    }
+
+    videoBtn.addEventListener('click', openVideoPopup);
+    closeVideoBtn.addEventListener('click', closeVideoPopup);
+
+    muteVideoBtn.addEventListener('click', () => {
+      greetingVideo.muted = !greetingVideo.muted;
+      muteVideoBtn.textContent = greetingVideo.muted
+        ? '🔇 Bật tiếng'
+        : '🔊 Tắt tiếng';
+    });
+
+    videoModal.addEventListener('click', (event) => {
+      if (event.target === videoModal) {
+        closeVideoPopup();
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && videoModal.classList.contains('show')) {
+        closeVideoPopup();
+      }
+    });
+
   </script>
 
 </body>
